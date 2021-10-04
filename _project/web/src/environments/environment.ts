@@ -1,16 +1,11 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
+import {createClient, SupabaseClient} from "@supabase/supabase-js";
+import { initSupabase } from '../app/_utils/initSupabase'
 
 export const environment = {
-  production: false
+  production: false,
+  qstatsUrl: "http://10.10.1.86:5000/qstats",
+  portalUrl: "http://10.10.1.86:5000/portals"
 };
 
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+export const supabase: SupabaseClient = createClient(initSupabase.supabaseUrl, initSupabase.supabaseKey);
+

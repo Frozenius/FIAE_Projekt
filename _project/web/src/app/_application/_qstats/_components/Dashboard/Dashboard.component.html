@@ -1,0 +1,18 @@
+<div class="p-4 grid">
+  <p-dropdown class="m-1" [options]="countries$" [(ngModel)]="selectedCountry" optionLabel="name" [filter]="true"
+    filterBy="name" [showClear]="true" placeholder="Select a Country" (onChange)="loadNewTable()">
+    <ng-template pTemplate="selectedItem">
+      <div class="country-item country-item-value row" *ngIf="selectedCountry">
+        <span [class]="'col-2 flag-icon flag-icon-' + selectedCountry.code.toLowerCase()"></span>
+        <div class="col-6">{{selectedCountry.name}}</div>
+      </div>
+    </ng-template>
+    <ng-template let-country pTemplate="item">
+      <div class="country-item row">
+        <span [class]="'col-2 mx-1 flag-icon flag-icon-' + country.code.toLowerCase()"></span>
+        <div class="col-8">{{country.name}}</div>
+      </div>
+    </ng-template>
+  </p-dropdown>
+</div>
+<router-outlet></router-outlet>
