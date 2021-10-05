@@ -1,3 +1,147 @@
-<p>
-  DetailedTable works!
-</p>
+<div class="p-3">
+  <button (click)="back()" pButton icon="pi pi-check" label="Go Back" class="mb-1"></button>
+  <p-progressBar *ngIf="stats.length == 0" mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+  <p-table [value]="stats" [scrollable]="true" scrollHeight="700px">
+    <ng-template pTemplate="colgroup" let-columns>
+      <colgroup>
+        <col style="width: 250px;">
+        <col style="width: 200px">
+        <col style="width: 200px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+        <col style="width: 250px">
+      </colgroup>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>AC ID</th>
+        <th>Group ID</th>
+        <th>First Crawltime</th>
+        <th>Last Crawltime</th>
+        <th>Last Web Adress</th>
+        <th>Price</th>
+        <th>Currency</th>
+        <th>KM</th>
+        <th>Registration</th>
+        <th>Make Model</th>
+        <th>Vin</th>
+        <th>Commision No</th>
+        <th>Body Type</th>
+        <th>Color</th>
+        <th>AC Color</th>
+        <th>Engine PWR</th>
+        <th>Engine Transmission</th>
+        <th>Cylinder Transmission</th>
+        <th>Engine Cylinder</th>
+        <th>Gear Box Type</th>
+        <th>Engine Gears</th>
+        <th>Doors</th>
+        <th>Seats</th>
+        <th>Fuel Type</th>
+        <th>Fuel Consumption</th>
+        <th>Co2</th>
+        <th>Visual Quality Picture</th>
+        <th>Visual Quality Film</th>
+        <th>Toxic Class</th>
+        <th>Toxic Plaquette</th>
+        <th>Color Interieur</th>
+        <th>Warranty Type</th>
+        <th>Crawled Vendor ID</th>
+        <th>Company Dealer</th>
+        <th>Company Name</th>
+        <th>Street</th>
+        <th>City</th>
+        <th>ZIP</th>
+        <th>Country</th>
+        <th>Recrawl</th>
+        <th>Delete Indicator</th>
+        <th>Delete Info</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-stat>
+      <tr>
+        <td>{{stat.id}}</td>
+        <td>{{stat.acid}}</td>
+        <td>{{stat.group_id}}</td>
+        <td>{{stat.first_crawldatetime | date}}</td>
+        <td>{{stat.last_crawldatetime | date}}</td>
+        <td><a [href]="stat.last_web_address" target="_blank" rel="noreferrer">LINK</a></td>
+        <td>{{stat.price}}</td>
+        <td>{{stat.currency}}</td>
+        <td>{{stat.km}}</td>
+        <td>{{stat.registration_date}}</td>
+        <td>{{stat.make_model}}</td>
+        <td>{{stat.vin}}</td>
+        <td>{{stat.commision_no}}</td>
+        <td>{{stat.body_type}}</td>
+        <td>{{stat.color}}</td>
+        <td>{{stat.ac_color}}</td>
+        <td>{{stat.engine_power}}</td>
+        <td>{{stat.engine_transmission}}</td>
+        <td>{{stat.cylinder_capacity}}</td>
+        <td>{{stat.engine_cylinders}}</td>
+        <td>{{stat.gear_box_type}}</td>
+        <td>{{stat.engine_gears}}</td>
+        <td>{{stat.doors}}</td>
+        <td>{{stat.seats}}</td>
+        <td>{{stat.fuel_type}}</td>
+        <td>{{stat.fuel_consumption}}</td>
+        <td>{{stat.co2}}</td>
+        <td>{{stat.visual_quality_picture}}</td>
+        <td>{{stat.visual_quality_film}}</td>
+        <td>{{stat.toxic_class}}</td>
+        <td>{{stat.toxic_plaquette}}</td>
+        <td>{{stat.color_interieur}}</td>
+        <td>{{stat.warranty_type}}</td>
+        <td>{{stat.crawled_vendor_id}}</td>
+        <td>{{stat.company_dealer}}</td>
+        <td>{{stat.company_name}}</td>
+        <td>{{stat.street}}</td>
+        <td>{{stat.city}}</td>
+        <td>{{stat.zip}}</td>
+        <td>{{stat.country}}</td>
+        <td>{{stat.recrawl}}</td>
+        <td>{{stat.delete_indicator}}</td>
+        <td>{{stat.delete_info}}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

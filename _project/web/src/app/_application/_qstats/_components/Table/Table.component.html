@@ -1,3 +1,112 @@
-<p>
-  Table works!
-</p>
+<p-table #dt [columns]="selectedColumns" [frozenColumns]="frozenCols" [value]="rows" [scrollable]="true"
+         scrollHeight="70vh" frozenWidth="300px" selectionMode="multiple" [(selection)]="selectedColumns"
+         [lazy]="true" [loading]="loading" (onLazyLoad)="loadStats($event)">
+  <ng-template pTemplate="caption">
+    <div class="flex">
+      <p-multiSelect [options]="portals" [(ngModel)]="selectedColumns" optionLabel="header"
+                     selectedItemsLabel="{0} columns selected" [style]="{minWidth: '200px'}"
+                     placeholder="Choose Columns" class="mr-2"></p-multiSelect>
+      <button (click)="setColumns(portals)" type="button" pButton pRipple class="p-button-info mr-2">ALL</button>
+      <button (click)="setColumns(portalsCountry)" type="button" pButton pRipple class="p-button-success mr-2">
+        FOR {{(country$ | async).toUpperCase()}}</button>
+      <button (click)="setColumns(portalsNonCountry)" type="button" pButton pRipple class="mr-2">
+        NOT {{(country$ | async).toUpperCase()}}</button>
+
+      <button type="button" pButton pRipple icon="pi pi-file-o" (click)="dt.exportCSV()" class="mr-2 ml-auto"
+              pTooltip="CSV"
+              tooltipPosition="bottom"></button>
+      <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+              class="p-button-success mr-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+      <!---<button (click)="switchArrowMode()"></button>-->
+      <button type="button" pButton pRipple icon="pi pi-filter" (click)="dt.exportCSV({selectionOnly:true})"
+              class="p-button-info mr-2" pTooltip="Selection Only" tooltipPosition="bottom"></button>
+
+    </div>
+  </ng-template>
+  <ng-template pTemplate="colgroup" let-columns>
+    <colgroup>
+      <col *ngFor="let col of columns" style="min-width: 50px">
+    </colgroup>
+  </ng-template>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th *ngFor="let col of columns" [ngClass]="[
+          col.header !== 'Keys' ? isInCountry(col.header) ? 'country' : 'nonCountry' : '',
+        ]"
+          style="min-width: 50px">
+        {{col.header.toUpperCase()}}
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-rows let-colums="columns">
+    <tr style="line-height: 0;">
+      <td *ngFor="let col of colums; index as i" style="padding-left: 0; min-width: 50px"
+          [ngClass]="[rows.key.includes('top') ? 'topStat' : '']">
+        <div class="cell" style="display: flex"
+             [ngClass]="
+              [rows.key.includes('top') ? rows[col.field] < 30 ? 'good' : '' : rows[col.field] <= 30 ? 'bad' : '',
+              rows.key.includes('top') ? rows[col.field] >= 30 && rows[col.field] <= 80 ? 'mid' : '' : rows[col.field] <= 80 && rows[col.field] > 30 ? 'mid' : '',
+              rows.key.includes('top') ? rows[col.field] > 80 ? 'bad' : '' : rows[col.field] > 80 ? 'good' : '']">
+          <ng-template #chartPop disabled>
+            <p-chart type="bar" [data]="detailData" [options]="chartOptions"></p-chart>
+          </ng-template>
+          <ng-template #totalPop disabled>
+            <p-chart type="bar" [data]="detailData" [options]="chartOptionsTotal"></p-chart>
+          </ng-template>
+          <!-- If to check iftype starts with top-->
+          <button container="body" type="button"
+                  [ngClass]="[(arrowMode | async) ? 'hide' : '']"
+                  class="arrow"
+                  (mouseenter)="getData(col.field, rows.key)"
+                  [triggers]="col.field === 'key' || rows.key === 'Days' ? '' : 'mouseenter:mouseleave'"
+                  style="
+                    min-width: 24px;
+                    min-height: 10px;
+                    text-align: right;
+                    background: none;
+                    text-decoration: none;
+                    border: none;"
+                  (click)="col.field !== 'key' || col.field !== 'total' ?  routeToDetail(col.field, rows.key)  : './'"
+                  [ngbPopover]="rows.key === 'total' ? totalPop : chartPop"
+                  [popoverTitle]="col.field + ' ' + rows.key">
+            {{rows[col.field] | kFormatter}}
+            <div [ngClass]="{
+            'even': checkFirsRows(rows.key, col.field) - rows[col.field] < 5 && checkFirsRows(rows.key, col.field) - rows[col.field] > (-5),
+              'rise': checkFirsRows(rows.key, col.field) - rows[col.field] < (-10),
+              'riserise': checkFirsRows(rows.key, col.field) - rows[col.field] < (-20),
+              'riseriserise': checkFirsRows(rows.key, col.field) - rows[col.field] < (-30),
+              'down': checkFirsRows(rows.key, col.field) - rows[col.field] > 10,
+              'downdown': checkFirsRows(rows.key, col.field) - rows[col.field] > 20,
+              'downdowndown': checkFirsRows(rows.key, col.field) - rows[col.field] > 30
+              }"></div>
+          </button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<p-dialog [header]="detailPortal + ' ' + detailType" [(visible)]="displayDetailChart" [style]="{width: '50vw'}"
+          [baseZIndex]="10000">
+  <ng-template pTemplate="footer">
+    <p-button icon="pi pi-check" (click)="displayDetailChart=false" label="Ok" styleClass="p-button-text"></p-button>
+  </ng-template>
+</p-dialog>
+
+
+<p-dialog
+  [header]="(topStatData | async)?.valueType + ' ' + (topStatData | async)?.country + ' ' + (topStatData | async)?.crawlpage"
+  [(visible)]="topStatPop" [style]="{width: '50vw'}">
+  <div>
+    <p>Datum: {{(topStatData | async)?.datum | date}}</p>
+    <p>Perc: {{(topStatData | async)?.perc}}</p>
+    <p>SumC: {{(topStatData | async)?.sumC}}</p>
+    <p>Total: {{(topStatData | async)?.total}}</p>
+    <p *ngFor="let val of (topStatData | async)?.vals">
+      {{val}}
+    </p>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button icon="pi pi-check" (click)="topStatPop = false" label="Ok" styleClass="p-button-text"></p-button>
+  </ng-template>
+</p-dialog>
